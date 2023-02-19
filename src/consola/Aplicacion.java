@@ -1,6 +1,7 @@
 package consola;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -21,6 +22,7 @@ public class Aplicacion {
 	private static String stringProductos = "\nProductos:\n";
 	private static String stringIngredientes = "\nIngredientes adicionales:\n";
 	private static String stringCombos = "\nCombos:\n";
+	private static String stringBebidas = "\nBebidas:\n";
 	
 	public static void main(String[] args) {
 		cargarArchivos();
@@ -47,8 +49,9 @@ public class Aplicacion {
 		 try {
 				FileReader archivoIngredientes = new FileReader("data/ingredientes.txt");
 				FileReader archivoMenu = new FileReader("data/menu.txt");
+				FileReader archivoBebidas = new FileReader("data/bebidas.txt");		
 				FileReader archivoCombos = new FileReader("data/combos.txt");
-				restaurante = Restaurante.cargarInformacionRestaurante(archivoIngredientes, archivoMenu, archivoCombos);
+				restaurante = Restaurante.cargarInformacionRestaurante(archivoIngredientes, archivoMenu, archivoBebidas, archivoCombos);
 				generarMenu();
 			} catch (FileNotFoundException e) {
 				System.out.println("\nArchivo no encontrado\n");
@@ -60,6 +63,7 @@ public class Aplicacion {
 	 public static void generarMenu() {
 		 ArrayList<ProductoMenu> menuBase = restaurante.getMenuBase();
 		 ArrayList<Ingrediente> ingredientes = restaurante.getIngredientes();
+		 ArrayList<ProductoMenu> bebidas = restaurante.getBebidas();
 		 ArrayList<Combo> combos = restaurante.getCombos();
 		 int i = 0;
 		 for (Producto producto: menuBase) {
@@ -74,6 +78,11 @@ public class Aplicacion {
 		 i = 0;
 		 for (Combo combo: combos) {
 			 stringCombos += i + ". " + combo.getNombre() + " " + combo.getItems() + " - $" + combo.getPrecio() + "\n";
+			 i++;
+		 }
+		 i = 0;
+		 for (Producto bebida: bebidas) {
+			 stringBebidas += i + ". " + bebida.getNombre() + " - $" + bebida.getPrecio() + "\n";
 			 i++;
 		 }
 	 }
@@ -116,6 +125,7 @@ public class Aplicacion {
 		System.out.print(stringProductos);
 		System.out.print(stringIngredientes);
 		System.out.print(stringCombos);
+		System.out.print(stringBebidas);
 		System.out.println("");
 	}
 			
@@ -127,11 +137,13 @@ public class Aplicacion {
 	 }
 	 
 	 public static void agregarElemento() {
-		 int i_producto_combo = index("\nEscriba si desea un: \n1. Producto del menú \n2. Combo\n");
+		 int i_producto_combo = index("\nEscriba si desea un: \n1. Producto del menú \n2. Combo\n3. Bebida\n");
 		 if (i_producto_combo == 1) {
 			 pedirProducto();
 		 } else if (i_producto_combo == 2) {
 			 pedirCombo();
+		 } else if (i_producto_combo == 3) {
+			 pedirBebida();
 		 } else {
 			 System.out.println("\nIngrese un número válido\n");
 		 }
@@ -197,6 +209,25 @@ public class Aplicacion {
 		 }
 	 }
 	 
+	 public static void pedirBebida() {
+		 System.out.print(stringBebidas);
+		 int i_bebida = index("\nEscriba el índice de su bebida: ");
+		 if (0 <= i_bebida && i_bebida < restaurante.getTamaño("Bebidas")) {
+			 ProductoMenu bebida = restaurante.getBebida(i_bebida);
+			 int i_cambio = index("\n¿Desea cambiar los ingredientes?\n1. Sí\n2. No\n");
+			 if (i_cambio == 1) {
+				 pedirCambio(bebida);
+			 } else if (i_cambio == 2) {
+				 restaurante.agregarProducto(bebida);
+				 System.out.println("\n¡Bebida agregada!\n");
+			 } else {
+				 System.out.println("\nIngrese un número válido\n");
+			 }
+		 } else {
+			 System.out.println("\nIngrese un número válido\n");
+		 }
+	 }
+	 
 	 public static void cerrarPedido() throws IOException {
 		 restaurante.cerrarYGuardarPedido();
 		 System.out.println("\n¡Su pedido ha sido cerrado y guardado!\n");
@@ -216,6 +247,8 @@ public class Aplicacion {
 			}
 			System.out.println("");
 			br.close();
+			String esIdentico = restaurante.pedidoIdentico(pedido);
+			System.out.println(esIdentico);
 		 } else {
 			 System.out.println("\nNo existe dicho pedido\n");
 		 }

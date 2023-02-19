@@ -6,16 +6,18 @@ public class ProductoAjustado implements Producto {
 	private ProductoMenu base;
 	private ArrayList<Ingrediente> agregados;
 	private ArrayList<Ingrediente> eliminados;
+	private int precio;
 	
 	public ProductoAjustado(ProductoMenu base) {
 		this.base = base;
 		this.agregados = new ArrayList<Ingrediente>();
 		this.eliminados = new ArrayList<Ingrediente>();
+		this.precio = base.getPrecio();
 	}
 	
 	public void agregarIngrediente(Ingrediente ingrediente) {
 		int aumento = ingrediente.getCostoAdicional();
-		base.aumentarPrecio(aumento);
+		precio += aumento;
 		agregados.add(ingrediente);
 	}
 	
@@ -32,14 +34,22 @@ public class ProductoAjustado implements Producto {
 		for (Ingrediente ingrediente: eliminados) {
 			cadena2 += ingrediente.getNombre() + ", ";
 		}
-		String agreg = cadena.trim() + ")";
-		String elim = cadena2.trim() + ")";
+		String agreg = cadena.substring(0, cadena.length() - 2) + ")";
+		String elim = cadena2.substring(0, cadena2.length() - 2) + ")";
 		return agreg + " " + elim;
 	}
-
+	
+	public ArrayList<Ingrediente> getAgregados(){
+		return agregados;
+	}
+	
+	public ArrayList<Ingrediente> getEliminados(){
+		return eliminados;
+	}
+	
 	@Override
 	public int getPrecio() {
-		return base.getPrecio();
+		return precio;
 	}
 
 	@Override

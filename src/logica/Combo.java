@@ -31,7 +31,7 @@ public class Combo implements Producto {
 		for (ProductoMenu producto: itemsCombo) {
 			cadena += producto.getNombre() + ", ";
 		}
-		String items = cadena.trim() + ")";
+		String items = cadena.substring(0, cadena.length() - 2) + ")";
 		return items;
 	}
 	

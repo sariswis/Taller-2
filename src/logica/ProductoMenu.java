@@ -9,10 +9,6 @@ public class ProductoMenu implements Producto {
 		this.precioBase = precioBase;
 	}
 	
-	public void aumentarPrecio(int aumento) {
-		precioBase += aumento;
-	}
-	
 	@Override
 	public int getPrecio() {
 		return precioBase;

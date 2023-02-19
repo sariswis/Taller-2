@@ -12,6 +12,9 @@ public class Pedido {
 	private String nombreCliente;
 	private String direccionCliente;
 	private ArrayList<Producto> itemsPedido;
+	private ArrayList<ProductoMenu> itemsMenu;
+	private ArrayList<Combo> itemsCombo;
+	private ArrayList<ProductoAjustado> itemsAjustado;
 	
 	public Pedido(String nombreCliente, String direccionCliente) {
 		numeroPedidos ++;
@@ -19,6 +22,9 @@ public class Pedido {
 		this.nombreCliente = nombreCliente;
 		this.direccionCliente = direccionCliente;
 		this.itemsPedido = new ArrayList<Producto>();
+		this.itemsMenu = new ArrayList<ProductoMenu>();
+		this.itemsCombo = new ArrayList<Combo>();
+		this.itemsAjustado = new ArrayList<ProductoAjustado>();
 	}
 	
 	public int getIdPedido() {
@@ -33,8 +39,29 @@ public class Pedido {
 		return direccionCliente;
 	}
 	
+	public ArrayList<ProductoMenu> getItemsMenu() {
+		return itemsMenu;
+	}
+	
+	public ArrayList<Combo> getItemsCombo() {
+		return itemsCombo;
+	}
+	
+	public ArrayList<ProductoAjustado> getItemsAjustado() {
+		return itemsAjustado;
+	}
+	
 	public void agregarProducto(Producto nuevoItem) {
 		itemsPedido.add(nuevoItem);
+		if (nuevoItem instanceof ProductoMenu) {
+			itemsMenu.add((ProductoMenu) nuevoItem);
+		} else if (nuevoItem instanceof Combo) {
+			itemsCombo.add((Combo) nuevoItem);
+		} else if (nuevoItem instanceof ProductoAjustado) {
+			itemsAjustado.add((ProductoAjustado) nuevoItem);
+		} else {
+			System.out.println("Problema de identificación de clases");
+		}
 	}
 	
 	private double getPrecioNetoPedido() {
